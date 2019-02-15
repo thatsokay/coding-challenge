@@ -1,0 +1,9 @@
+table.table {
+    table-layout: fixed;
+}
+
+td.result {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

@@ -1,10 +1,13 @@
+{% load static %}
+
 <html>
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device, initial-scale=1">
         <title>Aginic Challenge</title>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
-        <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+        <link rel="stylesheet" href="{% static 'frontend/bulma.min.css' %}">
+        <link rel="stylesheet" href="{% static 'frontend/index.css' %}">
+        <script src="{% static 'frontend/vue.min.js' %}"></script>
     </head>
 
     <body>
@@ -23,53 +26,29 @@
                     </div>
                 </div>
             </form>
-            <table class="table">
+            <table class="table is-hoverable is-fullwidth">
+                <thead>
+                    <tr>
+                        <th>Job URL</th>
+                        <th>Job result</th>
+                    </tr>
+                </thead>
                 <tbody>
                     <tr v-for="job in jobs">
                         <td>[[ job.url ]]</td>
-                        <td>[[ job.result ]]</td>
+                        <td class="result">[[ job.result ]]</td>
                     </tr>
                 </tbody>
             </table>
         </div>
         <script type="text/javascript">
-            let app = new Vue({
-                el: '#app',
-                delimiters: ['[[', ']]'],
-                data: {
-                    url: '',
-                    jobs: {{ jobs|safe }},
-                    limit: 10,
-                    page: 0,
-                },
-                methods: {
-                    handleSubmit: function() {
-                        fetch('/api/add_job', {
-                            method: 'POST',
-                            headers: {
-                                'Accept': 'application/json',
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({url: this.url}),
-                        })
-                        this.url = ''
-                    },
-                    updateJobs: function() {
-                        fetch(`/api/get_jobs?limit=${this.limit}&offset=${this.page * this.limit}`)
-                        .then(response => {
-                            if (response.ok) {
-                                return response.json()
-                            }
-                        })
-                        .then(json => {
-                            this.jobs = json
-                        })
-                    },
-                },
-                mounted: function() {
-                    setInterval(this.updateJobs, 5000)
-                },
-            })
+            var data = {
+                url: '',
+                jobs: {{ jobs|safe }},
+                limit: 10,
+                page: 0,
+            }
         </script>
+        <script type="text/javascript" src="{% static 'frontend/index.js' %}"></script>
     </body>
 </html>
