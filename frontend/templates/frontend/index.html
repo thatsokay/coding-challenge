@@ -39,6 +39,8 @@
                 data: {
                     url: '',
                     jobs: {{ jobs|safe }},
+                    limit: 10,
+                    page: 0,
                 },
                 methods: {
                     handleSubmit: function() {
@@ -52,6 +54,20 @@
                         })
                         this.url = ''
                     },
+                    updateJobs: function() {
+                        fetch(`/api/get_jobs?limit=${this.limit}&offset=${this.page * this.limit}`)
+                        .then(response => {
+                            if (response.ok) {
+                                return response.json()
+                            }
+                        })
+                        .then(json => {
+                            this.jobs = json
+                        })
+                    },
+                },
+                mounted: function() {
+                    setInterval(this.updateJobs, 5000)
                 },
             })
         </script>

@@ -24,6 +24,8 @@ def get_jobs(request):
     if request.method != 'GET':
         return HttpResponse(status=405)
 
-    query = TaskResult.objects.order_by('-date_done')
+    limit = int(request.GET.get('limit', '10'))
+    offset = int(request.GET.get('offset', '0'))
+    query = TaskResult.objects.order_by('-date_done')[offset:offset + limit]
     data = [{'url': task.task_args[2:-2], 'result': task.result} for task in query]
     return JsonResponse(data, safe=False)
