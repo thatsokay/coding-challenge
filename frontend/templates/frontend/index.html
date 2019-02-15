@@ -38,18 +38,13 @@
                 delimiters: ['[[', ']]'],
                 data: {
                     url: '',
-                    jobs: [],
+                    jobs: {{ jobs|safe }},
                 },
-                mounted: function() {
-                    fetch('/api/get_jobs')
-                    .then(response => {
-                        if (response.ok) {
-                            return response.json()
-                        }
-                    })
-                    .then(json => {
-                        this.jobs = json
-                    })
+                methods: {
+                    handleSubmit: function() {
+                        fetch('/api/add_job', {method: 'POST'})
+                        this.url = ''
+                    },
                 },
             })
         </script>
