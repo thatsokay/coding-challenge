@@ -4,11 +4,12 @@
         <meta name="viewport" content="width=device, initial-scale=1">
         <title>Aginic Challenge</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     </head>
 
     <body>
-        <div class="container">
-            <form>
+        <div id="app" class="container">
+            <form v-on:submit.prevent="handleSubmit">
                 <div class="field is-horizontal">
                     <div class="field-label is-normal">
                         <label class="label">URL</label>
@@ -16,12 +17,41 @@
                     <div class="field-body">
                         <div class="field">
                             <div class="control">
-                                <input class="input" type="text" placeholder="http://example.com">
+                                <input v-model="url" class="input" type="text" placeholder="http://example.com">
                             </div>
                         </div>
                     </div>
                 </div>
             </form>
+            <table class="table">
+                <tbody>
+                    <tr v-for="job in jobs">
+                        <td>[[ job.url ]]</td>
+                        <td>[[ job.result ]]</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
+        <script type="text/javascript">
+            let app = new Vue({
+                el: '#app',
+                delimiters: ['[[', ']]'],
+                data: {
+                    url: '',
+                    jobs: [],
+                },
+                mounted: function() {
+                    fetch('/api/get_jobs')
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json()
+                        }
+                    })
+                    .then(json => {
+                        this.jobs = json
+                    })
+                },
+            })
+        </script>
     </body>
 </html>

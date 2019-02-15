@@ -10,6 +10,6 @@ def add_job(request):
 def get_jobs(request):
     if request.method == 'GET':
         query = TaskResult.objects.order_by('-date_done')
-        data = [(task.task_args[2:-2], task.result) for task in query]
+        data = [{'url': task.task_args[2:-2], 'result': task.result} for task in query]
         return JsonResponse(data, safe=False)
     return HttpResponse(status=405)
