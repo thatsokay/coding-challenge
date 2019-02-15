@@ -42,7 +42,14 @@
                 },
                 methods: {
                     handleSubmit: function() {
-                        fetch('/api/add_job', {method: 'POST'})
+                        fetch('/api/add_job', {
+                            method: 'POST',
+                            headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({url: this.url}),
+                        })
                         this.url = ''
                     },
                 },
