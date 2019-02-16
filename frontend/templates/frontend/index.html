@@ -29,12 +29,14 @@
             <table class="table is-hoverable is-fullwidth">
                 <thead>
                     <tr>
+                        <th>Job time</th>
                         <th>Job URL</th>
                         <th>Job result</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="job in jobs">
+                        <td>[[ job.time ]]</td>
                         <td>[[ job.url ]]</td>
                         <td class="result">[[ job.result ]]</td>
                     </tr>
