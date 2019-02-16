@@ -26,19 +26,20 @@
                     </div>
                 </div>
             </form>
+            <h3 class="title is-3">Job history</h3>
             <table class="table is-hoverable is-fullwidth">
                 <thead>
                     <tr>
-                        <th>Job time</th>
-                        <th>Job URL</th>
-                        <th>Job result</th>
+                        <th>Time</th>
+                        <th>URL</th>
+                        <th>Result</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="job in jobs">
                         <td>[[ job.time ]]</td>
                         <td>[[ job.url ]]</td>
-                        <td class="result">[[ job.result ]]</td>
+                        <td>[[ job.result ]]</td>
                     </tr>
                 </tbody>
             </table>

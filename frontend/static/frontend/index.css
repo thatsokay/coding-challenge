@@ -1,9 +1,48 @@
-table.table {
+.table {
     table-layout: fixed;
 }
 
-td.result {
+.table thead tr th:nth-of-type(1) { width: 20% }
+.table thead tr th:nth-of-type(2) { width: 40% }
+.table thead tr th:nth-of-type(3) { width: 40% }
+
+.table td {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+@media 
+only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px)  {
+
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+
+    thead tr {
+        display: none;
+	  }
+
+	  .table tr { border: 1px solid #dbdbdb; }
+
+	  .table td {
+		    border: none;
+		    position: relative;
+		    padding-left: 25%;
+	  }
+
+	  .table td:before {
+		    position: absolute;
+		    top: 6px;
+		    left: 6px;
+		    width: 45%;
+		    padding-right: 10px;
+		    white-space: nowrap;
+	  }
+
+    .table td:nth-of-type(1):before { content: "Time"; font-weight: bold }
+	  .table td:nth-of-type(2):before { content: "URL"; font-weight: bold }
+	  .table td:nth-of-type(3):before { content: "Result"; font-weight: bold }
+
 }
