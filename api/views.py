@@ -9,6 +9,9 @@ from .tasks import fetch_url
 
 @csrf_exempt
 def add_job(request):
+    """
+    Submit a job to be run by celery.
+    """
     if request.method != 'POST':
         return HttpResponse(status=405)
 
@@ -22,6 +25,9 @@ def add_job(request):
 
 
 def get_jobs(request):
+    """
+    Get a list of finished jobs in reverse chronological order.
+    """
     if request.method != 'GET':
         return HttpResponse(status=405)
 
