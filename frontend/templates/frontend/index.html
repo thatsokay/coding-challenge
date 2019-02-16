@@ -4,54 +4,59 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device, initial-scale=1">
-        <title>Aginic Challenge</title>
+        <title>Coding Challenge</title>
         <link rel="stylesheet" href="{% static 'frontend/bulma.min.css' %}">
         <link rel="stylesheet" href="{% static 'frontend/index.css' %}">
         <script src="{% static 'frontend/vue.min.js' %}"></script>
     </head>
 
     <body>
-        <div id="app" class="container">
-            <form v-on:submit.prevent="handleSubmit">
-                <div class="field is-horizontal">
-                    <div class="field-label is-normal">
-                        <label class="label">URL</label>
-                    </div>
-                    <div class="field-body">
-                        <div class="field">
+        <div id="app">
+            <section class="section has-text-centered">
+                <div class="container">
+                    <h1 class="title">Coding Challenge</h1>
+                    <form v-on:submit.prevent="handleSubmit">
+                        <div class="field has-addons">
+                            <div class="control is-expanded">
+                                <input v-model="url" class="input is-medium" type="text" placeholder="http://example.com">
+                            </div>
                             <div class="control">
-                                <input v-model="url" class="input" type="text" placeholder="http://example.com">
+                                <button class="button is-medium">Submit Job</button>
                             </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
-            </form>
-            <h3 class="title is-3">Job history</h3>
-            <table class="table is-hoverable is-fullwidth">
-                <thead>
-                    <tr>
-                        <th>Time</th>
-                        <th>URL</th>
-                        <th>Result</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="job in jobs">
-                        <td>[[ job.time ]]</td>
-                        <td>[[ job.url ]]</td>
-                        <td>[[ job.result ]]</td>
-                    </tr>
-                </tbody>
-            </table>
+            </section>
+            <section class="section has-text-centered">
+                <div class="container">
+                    <h4 class="title is-4">Job history</h4>
+                    <table class="table is-hoverable is-fullwidth">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>URL</th>
+                                <th>Result</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="job in jobs">
+                                <td>[[ job.time ]]</td>
+                                <td>[[ job.url ]]</td>
+                                <td>[[ job.result ]]</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <script type="text/javascript">
+                    var data = {
+                        url: '',
+                        jobs: {{ jobs|safe }},
+                        limit: 10,
+                        page: 0,
+                    }
+                </script>
+                <script type="text/javascript" src="{% static 'frontend/index.js' %}"></script>
+            </section>
         </div>
-        <script type="text/javascript">
-            var data = {
-                url: '',
-                jobs: {{ jobs|safe }},
-                limit: 10,
-                page: 0,
-            }
-        </script>
-        <script type="text/javascript" src="{% static 'frontend/index.js' %}"></script>
     </body>
 </html>
