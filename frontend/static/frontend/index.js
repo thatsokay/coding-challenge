@@ -4,6 +4,12 @@ let app = new Vue({
     data,
     methods: {
         handleSubmit: function() {
+            if (!this.url) {
+                return
+            }
+            if (!this.url.includes('://')) {
+                this.url = 'http://' + this.url
+            }
             fetch('/api/add_job', {
                 method: 'POST',
                 headers: {
