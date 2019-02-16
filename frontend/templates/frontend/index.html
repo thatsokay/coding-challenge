@@ -31,6 +31,17 @@
             <section class="section has-text-centered">
                 <div class="container">
                     <h4 class="title is-4">Job history</h4>
+                    <div class="field has-addons paginator">
+                        <div class="control">
+                            <button v-on:click="prevPage" class="button">&lt;</button>
+                        </div>
+                        <div class="control">
+                            <input v-model="page" class="input page" type="tel">
+                        </div>
+                        <div class="control">
+                            <button v-on:click="nextPage" class="button">&gt;</button>
+                        </div>
+                    </div>
                     <table class="table is-hoverable is-fullwidth">
                         <thead>
                             <tr>
@@ -47,17 +58,28 @@
                             </tr>
                         </tbody>
                     </table>
+                    <div class="field has-addons paginator">
+                        <div class="control">
+                            <button v-on:click="prevPage" class="button">&lt;</button>
+                        </div>
+                        <div class="control">
+                            <input v-model="page" class="input page" type="tel">
+                        </div>
+                        <div class="control">
+                            <button v-on:click="nextPage" class="button">&gt;</button>
+                        </div>
+                    </div>
                 </div>
-                <script type="text/javascript">
-                    var data = {
-                        url: '',
-                        jobs: {{ jobs|safe }},
-                        limit: 10,
-                        page: 0,
-                    }
-                </script>
-                <script type="text/javascript" src="{% static 'frontend/index.js' %}"></script>
             </section>
         </div>
+        <script type="text/javascript">
+         var data = {
+             url: '',
+             jobs: {{ jobs|safe }},
+             limit: 10,
+             page: 1,
+         }
+        </script>
+        <script type="text/javascript" src="{% static 'frontend/index.js' %}"></script>
     </body>
 </html>

@@ -12,6 +12,15 @@
     text-overflow: ellipsis;
 }
 
+.field.paginator {
+    justify-content: center;
+}
+
+.page {
+    max-width: 40px;
+    text-align: center;
+}
+
 @media 
 only screen and (max-width: 760px),
 (min-device-width: 768px) and (max-device-width: 1024px)  {
