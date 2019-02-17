@@ -5,6 +5,10 @@ name = "pypi"
 
 [packages]
 django = "*"
+celery = "*"
+django-celery-results = "*"
+requests = "*"
+gunicorn = "*"
 
 [dev-packages]
 
