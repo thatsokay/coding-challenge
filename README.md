@@ -43,6 +43,8 @@ python manage.py runserver
 1. Create Celery systemd service file at `/etc/systemd/system/celery.service`
 1. Start Celery service with `systemctl start gunicorn`
 
+Sample configuration files can be found below.
+
 ## Testing
 
 `python manage.py test`
@@ -91,3 +93,136 @@ between workers.
   - `frontend/static/frontend/index.js` contains the Vue.js application running on the frontend.
   - `frontend/static/frontend/index.css` contains the styling on the frontend.
   - `frontend/templates/frontend/index.html` is the template used to render the frontend page.
+
+## Sample Configurations
+
+Start and enable services after creating systemd service files.
+
+```
+systemctl start <service name>
+systemctl enable <service name>
+```
+
+### Gunicorn
+
+#### `/etc/systemd/system/gunicorn.service`
+
+```
+[Unit]
+Description=gunicorn daemon
+After=network.target
+
+[Service]
+User=<username>
+Group=www-data
+WorkingDirectory=<project directory>
+ExecStart=<project directory>/venv/bin/gunicorn --access-logfile - --workers 3 --bind unix:<project directory>/<project name>.sock <project name>.wsgi:application
+
+[Install]
+WantedBy=multi-user.target
+```
+
+### Nginx
+
+#### `/etc/nginx/sites-available/<project name>`
+
+```
+server {
+    listen 80;
+    server_name <server domain or IP>;
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location /static/ {
+        root <project directory>;
+    }
+
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:<project directory>/<project name>.sock;
+    }
+}
+```
+
+### Celery
+
+#### `/etc/conf.d/celery`
+
+```
+# Names of nodes to start
+#   most people will only start one node:
+CELERYD_NODES="worker1"
+#   but you can also start multiple and configure settings
+#   for each in CELERYD_OPTS
+#CELERYD_NODES="worker1 worker2 worker3"
+#   alternatively, you can specify the number of nodes to start:
+#CELERYD_NODES=10
+
+# Absolute or relative path to the 'celery' command:
+#CELERY_BIN="/usr/local/bin/celery"
+#CELERY_BIN="/virtualenvs/def/bin/celery"
+CELERY_BIN="<project directory>/venv/bin/celery"
+
+# App instance to use
+# comment out this line if you don't use an app
+CELERY_APP="<project name>"
+# or fully qualified:
+#CELERY_APP="proj.tasks:app"
+
+# Where to chdir at start.
+#CELERYD_CHDIR="/opt/Myproject/"
+CELERYD_CHDIR="<project directory>"
+
+# Extra command-line arguments to the worker
+CELERYD_OPTS="--time-limit=300 --concurrency=8"
+# Configure node-specific settings by appending node name to arguments:
+#CELERYD_OPTS="--time-limit=300 -c 8 -c:worker2 4 -c:worker3 2 -Ofair:worker1"
+
+# Set logging level to DEBUG
+#CELERYD_LOG_LEVEL="DEBUG"
+CELERYD_LOG_LEVEL="INFO"
+
+# %n will be replaced with the first part of the nodename.
+#CELERYD_LOG_FILE="/var/log/celery/%n%I.log"
+#CELERYD_PID_FILE="/var/run/celery/%n.pid"
+CELERYD_LOG_FILE="<project directory>/%n%I.log"
+CELERYD_PID_FILE="<project directory>/%n.pid"
+
+# Workers should run as an unprivileged user.
+#   You need to create this user manually (or you can choose
+#   a user/group combination that already exists (e.g., nobody).
+CELERYD_USER="celery"
+CELERYD_GROUP="celery"
+
+# If enabled pid and log directories will be created if missing,
+# and owned by the userid/group configured.
+CELERY_CREATE_DIRS=1
+
+# How to call manage.py
+CELERYD_MULTI="multi"
+```
+
+#### `/etc/systemd/system/celery.service`
+
+```
+[Unit]
+Description=Celery Service
+After=network.target
+
+[Service]
+Type=forking
+User=celery
+Group=celery
+EnvironmentFile=/etc/conf.d/celery
+WorkingDirectory=<project directory>
+ExecStart=/bin/sh -c '${CELERY_BIN} multi start ${CELERYD_NODES} \
+  -A ${CELERY_APP} --pidfile=${CELERYD_PID_FILE} \
+  --logfile=${CELERYD_LOG_FILE} --loglevel=${CELERYD_LOG_LEVEL} ${CELERYD_OPTS}'
+ExecStop=/bin/sh -c '${CELERY_BIN} multi stopwait ${CELERYD_NODES} \
+  --pidfile=${CELERYD_PID_FILE}'
+ExecReload=/bin/sh -c '${CELERY_BIN} multi restart ${CELERYD_NODES} \
+  -A ${CELERY_APP} --pidfile=${CELERYD_PID_FILE} \
+  --logfile=${CELERYD_LOG_FILE} --loglevel=${CELERYD_LOG_LEVEL} ${CELERYD_OPTS}'
+
+[Install]
+WantedBy=multi-user.target
+```
